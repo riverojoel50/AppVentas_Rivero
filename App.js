@@ -1,7 +1,14 @@
 import { StyleSheet, View, TextInput, Button } from 'react-native';
-import { useState } from 'react'
+import { React, useState } from 'react'
 import CurrentModal from './components/Modal'
 import List from './components/List'
+import Header from './components/Header';
+import StartGameScreen from './pages/StartGameScreen';
+import GameScreen from './pages/GameScreen';
+
+//imports para fonts
+import {useFonts} from 'expo-font'
+import AppLoading from 'expo-app-loading'
 
 export default function App( ) {
     
@@ -27,30 +34,44 @@ export default function App( ) {
     setModalVisible(!modalVisible)
   }
 
+  const [loaded] = useFonts({
+    BitterBlack: require('./assets/fonts/Bitter-Black.ttf'),
+    BitterItalic:require('./assets/fonts/Bitter-Italic.ttf')
+  })
+  const [userNumber, setUserNumber] = useState()
+
+  const handlerStartGame = (selectedNumber) => {
+    setUserNumber(selectedNumber)
+  }
+
+  let content = <StartGameScreen onStartGame={handlerStartGame} />
+
+  if (userNumber)
+    content = <GameScreen userOption={userNumber}/>
 
   return (
     <View style={styles.screen}>
-      <CurrentModal onHandlerDelete = {onHandlerDeleteItem} visible = {modalVisible} itemSelected ={itemSelected}/>
+      <Header title= 'Game 1'></Header>
+      {/* <StartGameScreen /> */}
+
+      {content}
+
+      {/* <CurrentModal onHandlerDelete = {onHandlerDeleteItem} visible = {modalVisible} itemSelected ={itemSelected}/>
       
       <View style={styles.container}>
         <TextInput placeholder='Ingrese items' style={styles.input} value={textItem} onChangeText={onHandlerChangeItem} />
         <Button title='Add' style = {styles.buttona} onPress={onHandlerAddItem} disabled={textItem.length < 1 ? true : false }/>
       </View>
   
-      <List itemList = {itemList} onHandlerModal = {onHandlerModal}/>
+      <List itemList = {itemList} onHandlerModal = {onHandlerModal}/> */}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   screen: {
-    marginTop: '10%',
-    padding: 30,
-  },
-  container: {
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    flexDirection: 'row',
+    flex: 1
+    //marginTop: '10%',
   },
   input: {
     width: '80%',
@@ -59,8 +80,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   buttona:{
-    alignItems: "center",
-    backgroundColor: "#DDDDDD",
+    alignItems: 'center',
+    backgroundColor: '#DDDDDD',
     padding: 10,
   },
 })
